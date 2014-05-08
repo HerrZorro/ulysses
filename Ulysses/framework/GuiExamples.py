@@ -21,6 +21,7 @@ class GuiExamples(ttk.Frame):
         self.createThemeFrame()
         self.createResizableFrame()
         self.createTabbedFrame()
+        self.createForgottenFrame()
         self.createHelloWorldFrame()
         
         master.columnconfigure(0, weight=1)
@@ -178,9 +179,6 @@ class GuiExamples(ttk.Frame):
         
     def createResizableFrame(self):
         self.resizeFrame = self.getFrame('groove')
-        self.resizeFrame.grid(column=2, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
-        self.resizeFrame.columnconfigure(0, weight=1)
-        self.resizeFrame.rowconfigure(0, weight=1)
         
         p = ttk.Panedwindow(self.resizeFrame, orient=tk.VERTICAL)
         p.grid(sticky=(tk.N, tk.E, tk.S, tk.W))
@@ -189,12 +187,13 @@ class GuiExamples(ttk.Frame):
         f2 = ttk.Labelframe(p, text='P2', width=10, height=10) # second pane
         p.add(f1)
         p.add(f2)
+        
+        self.resizeFrame.grid(column=2, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self.resizeFrame.columnconfigure(0, weight=1)
+        self.resizeFrame.rowconfigure(0, weight=1)
 
     def createTabbedFrame(self):
         self.tabbedFrame = self.getFrame('flat')
-        self.tabbedFrame.grid(column=2, row=1, sticky=(tk.N, tk.W, tk.E, tk.S))
-        self.tabbedFrame.columnconfigure(0, weight=1)
-        self.tabbedFrame.rowconfigure(0, weight=1)
         
         n = ttk.Notebook(self.tabbedFrame)
         n.grid(sticky=(tk.N, tk.E, tk.S, tk.W))
@@ -202,10 +201,14 @@ class GuiExamples(ttk.Frame):
         f2 = ttk.Frame(n); # second page
         n.add(f1, text='One')
         n.add(f2, text='Two')
+        
+        self.tabbedFrame.grid(column=2, row=1, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self.tabbedFrame.columnconfigure(0, weight=1)
+        self.tabbedFrame.rowconfigure(0, weight=1)
     
     def createHelloWorldFrame(self):
         self.hellowWorldFrame = self.getFrame('flat')
-        self.hellowWorldFrame.grid(column=0, row=2, columnspan=3, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self.hellowWorldFrame.grid(column=1, row=2, columnspan=2, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.hellowWorldFrame.columnconfigure(0, weight=1)
         self.hellowWorldFrame.rowconfigure(0, weight=1)
         
@@ -217,6 +220,16 @@ class GuiExamples(ttk.Frame):
         self.QUIT = tk.Button(self.hellowWorldFrame, text="QUIT", fg="red",
                                             command=root.destroy)
         self.QUIT.pack(side="bottom")
+        
+    def createForgottenFrame(self):
+        frame = self.getFrame('groove')
+        
+        ttk.Button(frame,
+                   text='Frame not saved to self').grid(sticky=(tk.W, tk.E))
+        
+        frame.grid(column=0, row=2, sticky=(tk.N, tk.W, tk.E, tk.S))
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(0, weight=1)
         
     def getFrame(self, relief):
         """
