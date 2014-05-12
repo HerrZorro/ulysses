@@ -3,6 +3,8 @@ Created on May 11, 2014
 '''
 
 from tkinter import ttk
+import tkinter.scrolledtext
+import tkinter as tk
 
 from framework.GuiFrame import Panel
 from framework.GuiFrame import Window
@@ -10,14 +12,13 @@ from framework.GuiFrame import WindowLayout
 from framework.GuiFrame import fillAll
 from framework.GuiFrame import fillEW
 from framework.GuiFrame import fillNS
-import tkinter as tk
 
 
 class HUD(object):
     '''
-    classdocs
+    The main Heads Up Display
     '''
-    textWidth = 50
+    textWidth = 40
 
     def __init__(self):
         '''
@@ -26,24 +27,27 @@ class HUD(object):
         self.createWindow()
         self.createMenuBar()
         
-        self.createMapPanel()
-        self.createStoryPanel()
+        self.createEnvironmentPanel()
+        self.createDescriptionPanel()
         self.createInputPanel()
         self.createStatusPanel()
         self.createInventoryPanel()
         self.createPartyPanel()
+        
+        self.root.bind('<Return>', self.handleInput)
         
         self.window.show()
         
     def createWindow(self):
         self.layout = WindowLayout(["114",
                                     "114",
+                                    "114",
                                     "115",
                                     "115",
+                                    "225",
                                     "226",
                                     "226",
-                                    "227",
-                                    "337",])
+                                    "336"])
         self.window = Window(self.layout,
                              title="Ulysses")
         self.root = self.window.root
@@ -84,9 +88,10 @@ class HUD(object):
         
         self.root.config(menu=menubar)
         
-    def createMapPanel(self):
-        self.mapPanel = Panel(relief='ridge', parent=self.root)
-        panel = self.mapPanel
+    def createEnvironmentPanel(self):
+        # TODO:  Create a TextMap class to use here that handles updating
+        self.environmentPanel = Panel(relief='ridge', parent=self.root)
+        panel = self.environmentPanel
         tk.Text(panel.frame,
                 height=10,
                 width=self.textWidth,
@@ -95,13 +100,18 @@ class HUD(object):
         panel.frame.rowconfigure(0, weight=1)
         self.window.addPanel(panel, 1)
     
-    def createStoryPanel(self):
-        self.storyPanel = Panel(relief='ridge', parent=self.root)
-        panel = self.storyPanel
-        tk.Text(panel.frame,
-                height=7,
-                width=self.textWidth,
-                state=tk.DISABLED).grid(sticky=fillAll)
+    def createDescriptionPanel(self):
+        self.descriptionPanel = Panel(relief='ridge', parent=self.root)
+        panel = self.descriptionPanel
+        ScrolledText = tk.scrolledtext.ScrolledText
+        self.description = ScrolledText(panel.frame,
+                                        height=6,
+                                        width=self.textWidth,
+                                        state=tk.DISABLED)
+        self.description.grid(sticky=fillAll)
+        self.description.configure(font=("Ariel", 9))
+        self.description.bind("<1>",
+                              lambda e: self.description.focus_set())
         panel.frame.columnconfigure(0, weight=1)
         panel.frame.rowconfigure(0, weight=1)
         self.window.addPanel(panel, 2)
@@ -109,13 +119,15 @@ class HUD(object):
     def createInputPanel(self):
         self.inputPanel = Panel(relief='ridge', parent=self.root)
         panel = self.inputPanel
-        tk.Text(panel.frame,
-                height=1,
-                width=self.textWidth).grid(column=0, columnspan=3, row=0,
-                                           sticky=fillAll)
+        self.input = tk.StringVar()
+        tk.Label(panel.frame,
+                 text=">").grid(column=0, row=0, sticky=tk.E)
+        ttk.Entry(panel.frame,
+                  textvariable=self.input).grid(column=1, columnspan=3, row=0,
+                                                sticky=fillAll)
         tk.Button(panel.frame,
-                  text="Enter").grid(column=3, row=0, sticky=fillAll)
-        panel.frame.columnconfigure(0, weight=1)
+                  command=self.handleInput,
+                  text="Submit").grid(column=4, row=0, sticky=fillAll)
         panel.frame.columnconfigure(1, weight=1)
         panel.frame.columnconfigure(2, weight=1)
         panel.frame.columnconfigure(3, weight=1)
@@ -148,6 +160,17 @@ class HUD(object):
     
     def doNothing(self):
         pass
+    
+    def handleInput(self, *args):
+        if self.input.get() != "":
+            userInput = self.input.get()
+            
+            # TODO:  Implement real code, don't just transfer text
+            self.description.configure(state=tk.NORMAL)
+            self.description.insert(tk.END, userInput + "\n")
+            self.description.configure(state=tk.DISABLED)
+            
+            self.input.set("")
 
 if __name__ == "__main__":
     hud = HUD()

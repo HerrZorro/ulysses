@@ -49,16 +49,13 @@ class Panel(object):
                  parent = None):
         self.relief = relief
         self.parent = parent
-        self.frame = self.createFrame();
+        self.frame = self.__createFrame();
     
-    def createFrame(self) -> ttk.Frame:
+    def __createFrame(self) -> ttk.Frame:
         frame = ttk.Frame(self.parent)
         frame['padding'] = (5, 5)
         frame['borderwidth'] = 2
         frame['relief'] = self.relief
-        # TODO:  Can we make Panel internal columns fillAll automatically?
-        # frame.columnconfigure(0, weight=1)
-        # frame.rowconfigure(0, weight=1)
         return frame
     
 class WindowLayout(object):
@@ -75,10 +72,10 @@ class WindowLayout(object):
     
     def __init__(self,
                  layout: "Each element describes a column of each row" =[]):
-        self.createByArray(layout)
+        self.__createByArray(layout)
     
-    def createByArray(self,
-                      layout: "Each element describes a column of each row" =[]):
+    def __createByArray(self,
+                        layout: "Each element describes a column of each row" =[]):
         '''
         Go through array of numbers describing indices of Window, wherein each
         array element is a row, and each number in the string is the index of
@@ -98,12 +95,12 @@ class WindowLayout(object):
             for c, col in enumerate(row):
                 index = int(col)
                 if index not in colsForPanelsHandled:
-                    self.updatePanelWidth(index, r, c, panelIndices)
+                    self.__updatePanelWidth(index, r, c, panelIndices)
                 elif index not in heightForPanelsHandled:
                     self.panelSizes[index].height += 1
                     heightForPanelsHandled.append(index)
     
-    def updatePanelWidth(self, index, r, c, panelIndices):
+    def __updatePanelWidth(self, index, r, c, panelIndices):
         if index not in self.panelSizes:
             self.panelSizes[index] = PanelSize(row=r, col=c)
         else:
@@ -140,10 +137,10 @@ class Window(ttk.Frame):
         '''
         Display the Window
         '''
-        self.applyUniformExpansion()
+        self.__applyUniformExpansion()
         self.mainloop()
     
-    def applyUniformExpansion(self):
+    def __applyUniformExpansion(self):
         for r in range(self.layout.rows):
             self.root.rowconfigure(r, weight=1)
         for c in range(self.layout.columns):
