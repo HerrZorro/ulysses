@@ -46,12 +46,18 @@ class Panel(object):
     
     def __init__(self,
                  relief: "flat, raised, sunken, solid, ridge, groove" = 'flat', 
-                 parent = None):
+                 parent: tk.Widget = None):
+        '''
+        @type parent: tk.Widget
+        '''
         self.relief = relief
         self.parent = parent
         self.frame = self.__createFrame();
     
     def __createFrame(self) -> ttk.Frame:
+        '''
+        @rtype: ttk.Frame
+        '''
         frame = ttk.Frame(self.parent)
         frame['padding'] = (5, 5)
         frame['borderwidth'] = 2
@@ -61,7 +67,7 @@ class Panel(object):
 class WindowLayout(object):
     '''
     The WindowLayout describes how the Panel elements are arranged
-    No error handling here, so don't do dumb things!
+    No error handling here, so don't do dumb things (rectangles only)!
     '''
     
     def __str__(self):
@@ -72,6 +78,9 @@ class WindowLayout(object):
     
     def __init__(self,
                  layout: "Each element describes a column of each row" =[]):
+        '''
+        @type layout: List
+        '''
         self.__createByArray(layout)
     
     def __createByArray(self,
@@ -81,6 +90,7 @@ class WindowLayout(object):
         array element is a row, and each number in the string is the index of
         the Panel element in the Window at that column.
         ["11", "23"] = Panel 1 on top row, 2 at bottom left, 3 at bottom right
+        @type layout: List
         '''
         self.panelSizes = {}
         panelIndices = []
@@ -115,6 +125,9 @@ class Window(ttk.Frame):
     def __init__(self,
                  layout: WindowLayout,
                  title = "Dynamic Window Title"):
+        '''
+        @type layout: WindowLayout
+        '''
         self.root = tk.Tk()
         ttk.Frame.__init__(self, self.root)
         self.root.title(title)
@@ -125,6 +138,7 @@ class Window(ttk.Frame):
                  position: "Position at which to add panel"):
         '''
         Add a Panel to the Window at the desired position
+        @type panel: Panel
         '''
         panelSize = self.layout.panelSizes[position]
         panel.frame.grid(column=panelSize.col,
