@@ -1,18 +1,17 @@
 '''
 Created on May 7, 2014
 
-Operations:
- - Create a Window
- - Create the PanelLayout of the Window (footprints of each Panel) 
+Usage:
+ - Create the WindowLayout of the Window (footprints of each Panel) 
+ - Create a Window with the WindowLayout
  - Create all Panel elements
    - Populate each Panel as desired
- - Tell the Window where the Panel should go
- - Have the Window grid each Panel based on the PanelLayout
+ - Add each Panel to a position in the Window
 '''
 from tkinter import ttk
+import tkinter as tk
 import copy
 
-import tkinter as tk
 
 fillAll = (tk.N, tk.W, tk.E, tk.S)
 fillEW = (tk.W, tk.E)
@@ -31,7 +30,7 @@ class PanelSize(object):
 
     def __init__(self,
                  row: "Upper-left row start point" = 1,
-                 col: "Upper-left col start point" = 1,
+                 col: "Upper-left column start point" = 1,
                  width = 1,
                  height = 1):
         self.row = row
@@ -124,11 +123,13 @@ class Window(ttk.Frame):
     '''
     def __init__(self,
                  layout: WindowLayout,
-                 title = "Dynamic Window Title"):
+                 title = "Dynamic Window Title",
+                 root = tk.Tk()):
         '''
         @type layout: WindowLayout
+        @type root: tk.Widget
         '''
-        self.root = tk.Tk()
+        self.root = root
         ttk.Frame.__init__(self, self.root)
         self.root.title(title)
         self.layout = layout

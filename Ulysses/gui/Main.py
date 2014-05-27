@@ -6,13 +6,15 @@ from tkinter import ttk
 import tkinter.scrolledtext
 import tkinter as tk
 
-from framework.GuiFrame import Panel
-from framework.GuiFrame import Window
-from framework.GuiFrame import WindowLayout
-from framework.GuiFrame import fillAll
-from framework.GuiFrame import fillEW
-from framework.GuiFrame import fillNS
+from framework.panel import Panel
+from framework.panel import Window
+from framework.panel import WindowLayout
+from framework.panel import fillAll
+from framework.panel import fillEW
+from framework.panel import fillNS
 
+from framework.widgets import ScrollListbox
+from framework.widgets import ScrollText
 
 class HUD(object):
     '''
@@ -103,11 +105,14 @@ class HUD(object):
     def createDescriptionPanel(self):
         self.descriptionPanel = Panel(relief='ridge', parent=self.root)
         panel = self.descriptionPanel
-        ScrolledText = tk.scrolledtext.ScrolledText
-        self.description = ScrolledText(panel.frame,
-                                        height=6,
-                                        width=self.textWidth,
-                                        state=tk.DISABLED)
+#         ScrolledText = tk.scrolledtext.ScrolledText
+#         self.description = ScrolledText(panel.frame,
+#                                         height=6,
+#                                         width=self.textWidth,
+#                                         state=tk.DISABLED)
+        self.description = ScrollText(0, 0, panel.frame,
+                                      charwidth=self.textWidth, height=6,
+                                      state=tk.DISABLED)
         self.description.grid(sticky=fillAll)
         self.description.configure(font=("Ariel", 9))
         self.description.bind("<1>",
@@ -145,9 +150,10 @@ class HUD(object):
     def createInventoryPanel(self):
         self.inventoryPanel = Panel(relief='raised', parent=self.root)
         panel = self.inventoryPanel
-        tk.Label(panel.frame, text="Inventory:").grid(sticky=(tk.N, tk.W))
+        tk.Label(panel.frame, text="Inventory:").grid(row=0, sticky=(tk.N, tk.W))
+        ScrollListbox(0, 1, panel.frame).grid(sticky=fillAll)
         panel.frame.columnconfigure(0, weight=1)
-        panel.frame.rowconfigure(0, weight=1)
+        panel.frame.rowconfigure(1, weight=1)
         self.window.addPanel(panel, 5)
     
     def createPartyPanel(self):

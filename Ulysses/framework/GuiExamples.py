@@ -2,6 +2,7 @@
 Created on May 4, 2014
 '''
 from tkinter import ttk
+from tkinter import PanedWindow
 import random
 
 import tkinter as tk
@@ -180,13 +181,28 @@ class GuiExamples(ttk.Frame):
     def createResizableFrame(self):
         self.resizeFrame = self.getFrame('groove')
         
-        p = ttk.Panedwindow(self.resizeFrame, orient=tk.VERTICAL)
-        p.grid(sticky=(tk.N, tk.E, tk.S, tk.W))
+        fill = (tk.N, tk.E, tk.S, tk.W)
+        p1 = tk.PanedWindow(self.resizeFrame, orient=tk.HORIZONTAL)
+        p2 = tk.PanedWindow(p1, orient=tk.VERTICAL)
+        p1.grid(sticky=fill)
+        p2.grid(sticky=fill)
         # first pane, which would get widgets gridded into it:
-        f1 = ttk.Labelframe(p, text='P1', width=10, height=10)
-        f2 = ttk.Labelframe(p, text='P2', width=10, height=10) # second pane
-        p.add(f1)
-        p.add(f2)
+        isLabelframe = False
+        if isLabelframe:
+            f1 = ttk.Labelframe(p2, text='P1', width=5, height=5)
+            f2 = ttk.Labelframe(p2, text='P2', width=5, height=5) # second pane
+            f3 = ttk.Labelframe(p1, text='P3', width=5, height=10) # third pane
+        else:
+            f1 = ttk.Frame(p2, width=5, height=5)
+            f2 = ttk.Frame(p2, width=5, height=5) # second pane
+            f3 = ttk.Frame(p1, width=5, height=10) # third pane
+        ttk.Label(f1, text='L1').grid()
+        ttk.Label(f2, text='L2').grid()
+        ttk.Label(f3, text='L3').grid()
+        p2.add(f1, stretch='always')
+        p2.add(f2, stretch='always')
+        p1.add(p2, stretch='always')
+        p1.add(f3, stretch='always')
         
         self.resizeFrame.grid(column=2, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.resizeFrame.columnconfigure(0, weight=1)
