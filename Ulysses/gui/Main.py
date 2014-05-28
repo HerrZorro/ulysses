@@ -16,11 +16,17 @@ from framework.panel import fillNS
 from framework.widgets import ScrollListbox
 from framework.widgets import ScrollText
 
+from framework.tile import Tile
+from framework.tile import TileMap
+
 class HUD(object):
     '''
     The main Heads Up Display
+    @param textWidth: int
+    @param tileMap: TileMap
     '''
     textWidth = 40
+    tileMap = TileMap()
 
     def __init__(self):
         '''
@@ -105,11 +111,6 @@ class HUD(object):
     def createDescriptionPanel(self):
         self.descriptionPanel = Panel(relief='ridge', parent=self.root)
         panel = self.descriptionPanel
-#         ScrolledText = tk.scrolledtext.ScrolledText
-#         self.description = ScrolledText(panel.frame,
-#                                         height=6,
-#                                         width=self.textWidth,
-#                                         state=tk.DISABLED)
         self.description = ScrollText(0, 0, panel.frame,
                                       charwidth=self.textWidth, height=6,
                                       state=tk.DISABLED)
@@ -120,6 +121,7 @@ class HUD(object):
         panel.frame.columnconfigure(0, weight=1)
         panel.frame.rowconfigure(0, weight=1)
         self.window.addPanel(panel, 2)
+        self.updateDescription(self.tileMap.current.description())
     
     def createInputPanel(self):
         self.inputPanel = Panel(relief='ridge', parent=self.root)
@@ -170,13 +172,14 @@ class HUD(object):
     def handleInput(self, *args):
         if self.input.get() != "":
             userInput = self.input.get()
-            
-            # TODO:  Implement real code, don't just transfer text
-            self.description.configure(state=tk.NORMAL)
-            self.description.insert(tk.END, userInput + "\n")
-            self.description.configure(state=tk.DISABLED)
-            
+            self.updateDescription(self.tileMap.handleCommand(userInput))
             self.input.set("")
+            
+    def updateDescription(self, text):
+        self.description.configure(state=tk.NORMAL)
+        self.description.delete("0.0", tk.END)
+        self.description.insert(tk.END, text + "\n")
+        self.description.configure(state=tk.DISABLED)
 
 if __name__ == "__main__":
     hud = HUD()
